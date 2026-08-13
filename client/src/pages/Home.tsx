@@ -19,13 +19,14 @@ import {
   Layers3,
   Menu,
   Network,
+  Plus,
   Search,
-  ServerCog,
   ShieldCheck,
   SlidersHorizontal,
   X,
 } from "lucide-react";
 import { profiles, requirementLens, sources, type HyperscalerProfile, type Region } from "@/data/hyperscalers";
+import { CandidateWorkbench } from "@/components/CandidateWorkbench";
 
 type MetricKey = "all" | "density" | "iops" | "network" | "coverage";
 
@@ -52,11 +53,6 @@ function metricValue(profile: HyperscalerProfile, metric: MetricKey) {
   return profile.totalStorageTB ?? -1;
 }
 
-function fmt(value: number | null, suffix = "") {
-  if (value === null) return "—";
-  return `${value.toLocaleString("en-US")}${suffix}`;
-}
-
 export default function Home() {
   const [region, setRegion] = useState<"ALL" | Region>("ALL");
   const [metric, setMetric] = useState<MetricKey>("all");
@@ -81,9 +77,6 @@ export default function Home() {
 
   const selectedProfiles = profiles.filter((profile) => selectedIds.includes(profile.id));
   const activeProfile = profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0];
-  const maximumStorage = Math.max(...profiles.map((profile) => profile.totalStorageTB ?? 0));
-  const maximumNetwork = Math.max(...profiles.map((profile) => profile.networkGbps ?? 0));
-
   const toggleProfile = (id: string) => {
     setSelectedIds((current) => {
       if (current.includes(id)) return current.filter((item) => item !== id);
@@ -107,6 +100,7 @@ export default function Home() {
         <nav className="mt-8 space-y-1.5" aria-label="분석 영역">
           <a href="#overview" className="flex items-center gap-3 rounded-sm bg-white/10 px-3 py-2.5 text-sm font-medium"><Activity className="h-4 w-4 text-[#E65B32]" />Overview</a>
           <a href="#comparison" className="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-[#C9D3D9] transition hover:bg-white/8 hover:text-white"><SlidersHorizontal className="h-4 w-4" />Compare</a>
+          <a href="#candidates" className="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-[#C9D3D9] transition hover:bg-white/8 hover:text-white"><Plus className="h-4 w-4" />Candidates</a>
           <a href="#requirements" className="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-[#C9D3D9] transition hover:bg-white/8 hover:text-white"><HardDrive className="h-4 w-4" />SSD Lens</a>
           <a href="#sources" className="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-[#C9D3D9] transition hover:bg-white/8 hover:text-white"><Layers3 className="h-4 w-4" />Sources</a>
         </nav>
@@ -134,6 +128,7 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-2 text-sm font-semibold">
           <a onClick={() => setIsMenuOpen(false)} href="#overview" className="rounded-sm bg-[#F4F0E7] px-3 py-3">Overview</a>
           <a onClick={() => setIsMenuOpen(false)} href="#comparison" className="rounded-sm bg-[#F4F0E7] px-3 py-3">Compare</a>
+          <a onClick={() => setIsMenuOpen(false)} href="#candidates" className="rounded-sm bg-[#F4F0E7] px-3 py-3">Candidates</a>
           <a onClick={() => setIsMenuOpen(false)} href="#requirements" className="rounded-sm bg-[#F4F0E7] px-3 py-3">SSD Lens</a>
           <a onClick={() => setIsMenuOpen(false)} href="#sources" className="rounded-sm bg-[#F4F0E7] px-3 py-3">Sources</a>
         </div>
@@ -233,6 +228,8 @@ export default function Home() {
           </div>
         </section>
 
+        <CandidateWorkbench />
+
         <section className="mx-auto grid max-w-[1380px] gap-6 px-4 py-10 sm:px-7 lg:grid-cols-[minmax(0,7fr)_minmax(310px,3fr)] lg:px-10 lg:py-12">
           <div className="border border-[#17202A]/13 bg-[#FFFDF8] surface-shadow">
             <div className="flex flex-col gap-5 border-b border-[#17202A]/10 p-5 sm:flex-row sm:items-start sm:justify-between"><div><div className="flex items-center gap-2"><span className={`rounded-full border px-2 py-0.5 font-mono-ui text-[9px] tracking-[.1em] ${regionStyle[activeProfile.region]}`}>{activeProfile.region}</span><span className="font-mono-ui text-[10px] text-[#6B6D69]">SOURCE {sourceLabel(activeProfile.sourceIds)}</span></div><h2 className="font-display mt-3 text-2xl font-semibold tracking-tight">{activeProfile.provider}<span className="mx-2 text-[#E65B32]">/</span>{activeProfile.profile}</h2><p className="mt-1 text-sm text-[#59636b]">{activeProfile.cpu} · {activeProfile.architecture}</p></div><div className="flex items-center gap-2 self-start rounded-sm bg-[#F4F0E7] px-3 py-2 font-mono-ui text-[10px] tracking-[.08em]"><span className={`h-2 w-2 rounded-full ${activeProfile.coverage === "A" ? "bg-[#5F8E84]" : activeProfile.coverage === "B" ? "bg-[#B79754]" : "bg-[#A2A6A2]"}`} />COVERAGE {activeProfile.coverage}</div></div>
@@ -260,7 +257,7 @@ export default function Home() {
         </section>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-around border-t border-[#17202A]/12 bg-[#FFFDF8]/95 px-2 py-2 backdrop-blur-lg lg:hidden" aria-label="모바일 탐색"><a href="#overview" className="flex flex-col items-center gap-1 px-3 py-1 text-[10px] font-medium text-[#17202A]"><Activity className="h-4 w-4 text-[#E65B32]" />Overview</a><a href="#comparison" className="flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-[#6B6D69]"><SlidersHorizontal className="h-4 w-4" />Compare</a><a href="#requirements" className="flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-[#6B6D69]"><Database className="h-4 w-4" />SSD Lens</a><a href="#sources" className="flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-[#6B6D69]"><Boxes className="h-4 w-4" />Sources</a></nav>
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-around border-t border-[#17202A]/12 bg-[#FFFDF8]/95 px-2 py-2 backdrop-blur-lg lg:hidden" aria-label="모바일 탐색"><a href="#overview" className="flex flex-col items-center gap-1 px-2 py-1 text-[10px] font-medium text-[#17202A]"><Activity className="h-4 w-4 text-[#E65B32]" />Overview</a><a href="#comparison" className="flex flex-col items-center gap-1 px-2 py-1 text-[10px] text-[#6B6D69]"><SlidersHorizontal className="h-4 w-4" />Compare</a><a href="#candidates" className="flex flex-col items-center gap-1 px-2 py-1 text-[10px] text-[#6B6D69]"><Plus className="h-4 w-4" />Candidates</a><a href="#requirements" className="flex flex-col items-center gap-1 px-2 py-1 text-[10px] text-[#6B6D69]"><Database className="h-4 w-4" />SSD Lens</a><a href="#sources" className="flex flex-col items-center gap-1 px-2 py-1 text-[10px] text-[#6B6D69]"><Boxes className="h-4 w-4" />Sources</a></nav>
     </div>
   );
 }

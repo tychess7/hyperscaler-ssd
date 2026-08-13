@@ -37,6 +37,16 @@ export type HyperscalerProfile = {
   planningSignal: string;
   coverage: "A" | "B" | "C";
   sourceIds: number[];
+  /** 공개 인스턴스 자료를 드라이브 단위로 정규화한 비교용 참고값이다. null은 공개되지 않았음을 뜻한다. */
+  candidateReference: {
+    capacityGb: number | null;
+    readIops: number | null;
+    writeIops: number | null;
+    readMBps: number | null;
+    writeMBps: number | null;
+    pcieGen: string | null;
+    dwpd: number | null;
+  };
 };
 
 export const sources: Source[] = [
@@ -105,6 +115,7 @@ export const profiles: HyperscalerProfile[] = [
     planningSignal: "피크 수치보다 지연 변동성·Torn Write Prevention·클라우드 규모 펌웨어 운영성을 강하게 강조합니다.",
     coverage: "A",
     sourceIds: [1],
+    candidateReference: { capacityGb: 3750, readIops: null, writeIops: null, readMBps: 2800, writeMBps: null, pcieGen: null, dwpd: null },
   },
   {
     id: "gcp-z3",
@@ -132,6 +143,7 @@ export const profiles: HyperscalerProfile[] = [
     planningSignal: "읽기·쓰기 IOPS와 처리량을 함께 공개하며, 스토리지/네트워크 오프로드와 대규모 병렬 I/O를 하나의 설계 단위로 봅니다.",
     coverage: "A",
     sourceIds: [2],
+    candidateReference: { capacityGb: 3221, readIops: 750000, writeIops: 500000, readMBps: 3000, writeMBps: 2500, pcieGen: null, dwpd: null },
   },
   {
     id: "azure-lsv3",
@@ -159,6 +171,7 @@ export const profiles: HyperscalerProfile[] = [
     planningSignal: "로컬 디스크를 데이터 경로의 중심에 놓되, 데이터 지속성은 다중 VM 복제라는 시스템 설계로 해결합니다.",
     coverage: "B",
     sourceIds: [3],
+    candidateReference: { capacityGb: 2061, readIops: null, writeIops: null, readMBps: null, writeMBps: null, pcieGen: null, dwpd: null },
   },
   {
     id: "alibaba-i5",
@@ -186,6 +199,7 @@ export const profiles: HyperscalerProfile[] = [
     planningSignal: "SSD만이 아니라 CIPU·eRDMA·대형 패킷 처리량까지 포함한 호스트 데이터 경로 설계가 핵심입니다.",
     coverage: "A",
     sourceIds: [4],
+    candidateReference: { capacityGb: 3839, readIops: 75000, writeIops: null, readMBps: 500, writeMBps: null, pcieGen: null, dwpd: null },
   },
   {
     id: "tencent-ita5",
@@ -213,6 +227,7 @@ export const profiles: HyperscalerProfile[] = [
     planningSignal: "매우 큰 로컬 NVMe 집적도를 공개하지만, 해당 프로파일의 SSD IOPS·처리량은 문서에서 개별 수치로 제시하지 않습니다.",
     coverage: "B",
     sourceIds: [5],
+    candidateReference: { capacityGb: 7140, readIops: null, writeIops: null, readMBps: null, writeMBps: null, pcieGen: null, dwpd: null },
   },
   {
     id: "baidu-l7",
@@ -240,6 +255,7 @@ export const profiles: HyperscalerProfile[] = [
     planningSignal: "공개 범위가 분산되어 있으므로, 견적·조달 단계에서 대상 리전과 SKU의 최신 원문을 확인해야 합니다.",
     coverage: "C",
     sourceIds: [6],
+    candidateReference: { capacityGb: null, readIops: null, writeIops: null, readMBps: null, writeMBps: null, pcieGen: null, dwpd: null },
   },
 ];
 
