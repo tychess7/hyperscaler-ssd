@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
+/** Signal Ledger shell — a bright, evidence-led research workstation. */
 
 function Router() {
   return (
