@@ -60,3 +60,45 @@ export const ssdCandidates = mysqlTable(
 
 export type SsdCandidate = typeof ssdCandidates.$inferSelect;
 export type InsertSsdCandidate = typeof ssdCandidates.$inferInsert;
+
+/**
+ * User-owned server candidates. Server power and physical topology remain separate
+ * from the public cloud VM profile, whose underlying host details are often undisclosed.
+ */
+export const serverCandidates = mysqlTable(
+  "serverCandidates",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull(),
+    manufacturer: varchar("manufacturer", { length: 64 }).notNull(),
+    model: varchar("model", { length: 128 }).notNull(),
+    rackUnits: decimal("rackUnits", { precision: 5, scale: 2 }),
+    powerCapacityW: int("powerCapacityW"),
+    powerSupplyCount: int("powerSupplyCount"),
+    cpuModel: varchar("cpuModel", { length: 160 }),
+    cpuSockets: int("cpuSockets"),
+    cpuCores: int("cpuCores"),
+    memoryGiB: int("memoryGiB"),
+    networkGbps: int("networkGbps"),
+    ssdFormFactor: varchar("ssdFormFactor", { length: 64 }),
+    ssdInterface: varchar("ssdInterface", { length: 64 }),
+    ssdProtocol: varchar("ssdProtocol", { length: 64 }),
+    ssdCount: int("ssdCount"),
+    ssdCapacityPerDriveGb: int("ssdCapacityPerDriveGb"),
+    ssdAggregateIops: int("ssdAggregateIops"),
+    ssdReadIops: int("ssdReadIops"),
+    ssdWriteIops: int("ssdWriteIops"),
+    ssdAggregateMBps: int("ssdAggregateMBps"),
+    ssdReadMBps: int("ssdReadMBps"),
+    ssdWriteMBps: int("ssdWriteMBps"),
+    sourceFileName: varchar("sourceFileName", { length: 255 }),
+    sourceUrl: varchar("sourceUrl", { length: 2048 }),
+    notes: text("notes"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => [index("serverCandidates_user_idx").on(table.userId)],
+);
+
+export type ServerCandidate = typeof serverCandidates.$inferSelect;
+export type InsertServerCandidate = typeof serverCandidates.$inferInsert;

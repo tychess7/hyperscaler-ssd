@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertSsdCandidate, InsertUser, ssdCandidates, users } from "../drizzle/schema";
+import { InsertServerCandidate, InsertSsdCandidate, InsertUser, serverCandidates, ssdCandidates, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -107,4 +107,24 @@ export async function deleteSsdCandidate(userId: number, candidateId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   await db.delete(ssdCandidates).where(and(eq(ssdCandidates.id, candidateId), eq(ssdCandidates.userId, userId)));
+}
+
+/** Server records are scoped to the authenticated owner exactly like SSD candidates. */
+export async function listServerCandidates(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  return db.select().from(serverCandidates).where(eq(serverCandidates.userId, userId)).orderBy(desc(serverCandidates.updatedAt));
+}
+
+export async function createServerCandidates(userId: number, candidates: Omit<InsertServerCandidate, "id" | "userId" | "createdAt" | "updatedAt">[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  if (candidates.length === 0) return;
+  await db.insert(serverCandidates).values(candidates.map((candidate) => ({ ...candidate, userId })));
+}
+
+export async function deleteServerCandidate(userId: number, candidateId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.delete(serverCandidates).where(and(eq(serverCandidates.id, candidateId), eq(serverCandidates.userId, userId)));
 }

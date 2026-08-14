@@ -5,6 +5,9 @@ const dbMocks = vi.hoisted(() => ({
   createSsdCandidates: vi.fn(),
   deleteSsdCandidate: vi.fn(),
   listSsdCandidates: vi.fn(),
+  createServerCandidates: vi.fn(),
+  deleteServerCandidate: vi.fn(),
+  listServerCandidates: vi.fn(),
 }));
 
 vi.mock("./db", () => dbMocks);

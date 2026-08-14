@@ -47,6 +47,25 @@ export type HyperscalerProfile = {
     pcieGen: string | null;
     dwpd: number | null;
   };
+  /** 서버 후보와의 비교에 쓰는 공개값이다. 물리 호스트 또는 랙 정보가 비공개면 null로 보존한다. */
+  serverReference: {
+    rackUnits: number | null;
+    powerCapacityW: number | null;
+    cpuCores: number | null;
+    memoryGiB: number | null;
+    networkGbps: number | null;
+    ssdFormFactor: string | null;
+    ssdInterface: string | null;
+    ssdProtocol: string | null;
+    ssdCount: number | null;
+    ssdCapacityPerDriveGb: number | null;
+    ssdAggregateIops: number | null;
+    ssdReadIops: number | null;
+    ssdWriteIops: number | null;
+    ssdAggregateMBps: number | null;
+    ssdReadMBps: number | null;
+    ssdWriteMBps: number | null;
+  };
 };
 
 export const sources: Source[] = [
@@ -116,6 +135,7 @@ export const profiles: HyperscalerProfile[] = [
     coverage: "A",
     sourceIds: [1],
     candidateReference: { capacityGb: 3750, readIops: null, writeIops: null, readMBps: 2800, writeMBps: null, pcieGen: null, dwpd: null },
+    serverReference: { rackUnits: null, powerCapacityW: null, cpuCores: null, memoryGiB: 1024, networkGbps: 75, ssdFormFactor: null, ssdInterface: "NVMe", ssdProtocol: "NVMe", ssdCount: 8, ssdCapacityPerDriveGb: 3750, ssdAggregateIops: null, ssdReadIops: null, ssdWriteIops: null, ssdAggregateMBps: 22400, ssdReadMBps: 22400, ssdWriteMBps: null },
   },
   {
     id: "gcp-z3",
@@ -144,6 +164,7 @@ export const profiles: HyperscalerProfile[] = [
     coverage: "A",
     sourceIds: [2],
     candidateReference: { capacityGb: 3221, readIops: 750000, writeIops: 500000, readMBps: 3000, writeMBps: 2500, pcieGen: null, dwpd: null },
+    serverReference: { rackUnits: null, powerCapacityW: null, cpuCores: null, memoryGiB: 1406, networkGbps: 200, ssdFormFactor: null, ssdInterface: "NVMe", ssdProtocol: "NVMe", ssdCount: 12, ssdCapacityPerDriveGb: 3221, ssdAggregateIops: null, ssdReadIops: 9000000, ssdWriteIops: 6000000, ssdAggregateMBps: null, ssdReadMBps: 36000, ssdWriteMBps: 30000 },
   },
   {
     id: "azure-lsv3",
@@ -172,6 +193,7 @@ export const profiles: HyperscalerProfile[] = [
     coverage: "B",
     sourceIds: [3],
     candidateReference: { capacityGb: 2061, readIops: null, writeIops: null, readMBps: null, writeMBps: null, pcieGen: null, dwpd: null },
+    serverReference: { rackUnits: null, powerCapacityW: null, cpuCores: null, memoryGiB: 640, networkGbps: 32, ssdFormFactor: null, ssdInterface: "NVMe", ssdProtocol: "NVMe", ssdCount: 10, ssdCapacityPerDriveGb: 2061, ssdAggregateIops: null, ssdReadIops: null, ssdWriteIops: null, ssdAggregateMBps: null, ssdReadMBps: null, ssdWriteMBps: null },
   },
   {
     id: "alibaba-i5",
@@ -200,6 +222,7 @@ export const profiles: HyperscalerProfile[] = [
     coverage: "A",
     sourceIds: [4],
     candidateReference: { capacityGb: 3839, readIops: 75000, writeIops: null, readMBps: 500, writeMBps: null, pcieGen: null, dwpd: null },
+    serverReference: { rackUnits: null, powerCapacityW: null, cpuCores: null, memoryGiB: 1024, networkGbps: 320, ssdFormFactor: null, ssdInterface: "NVMe", ssdProtocol: "NVMe", ssdCount: 8, ssdCapacityPerDriveGb: 3839, ssdAggregateIops: 600000, ssdReadIops: null, ssdWriteIops: null, ssdAggregateMBps: 4000, ssdReadMBps: null, ssdWriteMBps: null },
   },
   {
     id: "tencent-ita5",
@@ -228,6 +251,7 @@ export const profiles: HyperscalerProfile[] = [
     coverage: "B",
     sourceIds: [5],
     candidateReference: { capacityGb: 7140, readIops: null, writeIops: null, readMBps: null, writeMBps: null, pcieGen: null, dwpd: null },
+    serverReference: { rackUnits: null, powerCapacityW: null, cpuCores: null, memoryGiB: 2304, networkGbps: 160, ssdFormFactor: null, ssdInterface: "NVMe", ssdProtocol: "NVMe", ssdCount: 24, ssdCapacityPerDriveGb: 7140, ssdAggregateIops: null, ssdReadIops: null, ssdWriteIops: null, ssdAggregateMBps: null, ssdReadMBps: null, ssdWriteMBps: null },
   },
   {
     id: "baidu-l7",
@@ -256,6 +280,7 @@ export const profiles: HyperscalerProfile[] = [
     coverage: "C",
     sourceIds: [6],
     candidateReference: { capacityGb: null, readIops: null, writeIops: null, readMBps: null, writeMBps: null, pcieGen: null, dwpd: null },
+    serverReference: { rackUnits: null, powerCapacityW: null, cpuCores: null, memoryGiB: null, networkGbps: null, ssdFormFactor: null, ssdInterface: null, ssdProtocol: null, ssdCount: null, ssdCapacityPerDriveGb: null, ssdAggregateIops: null, ssdReadIops: null, ssdWriteIops: null, ssdAggregateMBps: null, ssdReadMBps: null, ssdWriteMBps: null },
   },
 ];
 
