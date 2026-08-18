@@ -17,3 +17,7 @@ Vercel은 `https://hyperscaler-ssd-git-feat-vercel-function-preview-tychess.verc
 ## 2차 배포 오류와 수정
 
 두 번째 Preview는 `No entrypoint found which imports express. Found possible entrypoint: app.ts` 오류로 실패했다. `app.ts`가 `createApp()`만 간접 호출했기 때문에 Vercel Express 프레임워크 감지기가 루트 파일 자체에서 Express 가져오기를 식별하지 못했다. 다음 수정에서는 `app.ts`가 `express`를 직접 가져오고 `configureApp(express())`로 Function 앱을 생성하도록 변경한다.
+
+## 3차 Preview 상태
+
+커밋 `0e2f817`은 Vercel에서 `Ready`로 빌드됐고 Preview URL은 `https://hyperscaler-jhulxgkwg-tychess.vercel.app`이다. 그러나 루트 요청은 `500 FUNCTION_INVOCATION_FAILED`로 실패했다. 이는 Function 감지는 성공했지만 런타임 초기화 또는 요청 처리 중 예외가 발생했음을 뜻하므로, Production 반영 전에 Runtime Logs에서 원인을 해결해야 한다.

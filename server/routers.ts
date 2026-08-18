@@ -1,9 +1,9 @@
 import { COOKIE_NAME } from "@shared/const";
 import { z } from "zod";
-import { createServerCandidates, createSsdCandidates, deleteServerCandidate, deleteSsdCandidate, listServerCandidates, listSsdCandidates } from "./db";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { createServerCandidates, createSsdCandidates, deleteServerCandidate, deleteSsdCandidate, listServerCandidates, listSsdCandidates } from "./db.js";
+import { getSessionCookieOptions } from "./_core/cookies.js";
+import { systemRouter } from "./_core/systemRouter.js";
+import { protectedProcedure, publicProcedure, router } from "./_core/trpc.js";
 
 const candidateInput = z.object({
   manufacturer: z.enum(["Samsung", "SK hynix", "Micron", "KIOXIA", "SanDisk", "DapuStor"]),

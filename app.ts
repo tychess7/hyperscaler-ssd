@@ -1,5 +1,5 @@
 import express from "express";
-import { configureApp } from "./server/app";
+import { configureApp } from "./server/app.js";
 
 /**
  * Vercel detects a root app.ts and serves this default-exported Express app as
