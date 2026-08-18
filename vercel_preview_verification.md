@@ -35,3 +35,11 @@ Runtime Logs는 `/var/task/app.js`가 확장자 없는 `./server/app`을 가져�
 최신 Preview URL은 브라우저 확인 시 계속 `Deployment is building` 상태였다. 배포가 완료된 후 Function 런타임과 환경 변수 의존 경로를 재검증한다.
 
 커밋 `6b02119`의 Function은 더 이상 모듈 오류 없이 기동됐지만 루트에서 `Cannot GET /`를 반환했다. 이는 Express Function이 정상 실행되는 반면, Vite가 생성한 `public/index.html`을 Function이 제공하지 못한다는 뜻이다. 다음 수정에서는 `public/**`을 Function 포함 파일로 명시하고, API 라우트 등록 뒤에 `express.static(publicDir)` 및 SPA 폴백을 추가한다.
+
+정적 자산 제공 보완 커밋 `0a42617`은 새 Preview URL `https://hyperscaler-h92wrax9k-tychess.vercel.app`로 생성됐으며, 초기 확인 시 `Building` 상태였다. 빌드 완료 후 루트와 API 경로를 검증한다.
+
+Vercel 배포 목록을 재확인한 결과, `0a42617`은 계속 빌드 중이었다. 이전 Function 어댑터 커밋들은 모두 Ready 상태이므로, 이 배포의 완료 이후 HTTP 응답만 확인하면 된다.
+
+커밋 `0a42617`의 Preview는 Vercel에서 `Ready`로 빌드 완료됐다. 이제 `https://hyperscaler-h92wrax9k-tychess.vercel.app`에서 루트 페이지 및 API 경로를 실제로 검증한다.
+
+실제 검증에서 루트는 `Signal Ledger · Hyperscaler SSD Intelligence` 대시보드 HTML을 정상 렌더링했고, 정적 CSS·JavaScript가 로드돼 전체 UI가 표시됐다. `/api/trpc/auth.me`는 HTML이 아닌 `{"result":{"data":{"json":null}}}` JSON을 반환했다. 즉, Function·SPA·tRPC 공개 경로는 Preview에서 정상 동작한다. OAuth 시작과 사용자 저장 기능은 Vercel 환경 변수와 OAuth 콜백 허용 구성이 없으므로 Production 환경 설정 후에 검증한다.
