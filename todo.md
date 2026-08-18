@@ -48,3 +48,4 @@
 - [x] Vercel 어댑터 구조의 단위 테스트, 타입 검사, 로컬 프로덕션 빌드를 검증한다. (16개 테스트·타입 검사·일반/VERCEL 빌드 통과)
 - [ ] Preview 배포에서 HTML·정적 자산·tRPC·OAuth 시작 경로의 응답을 검증하고 환경 변수 의존 실패를 분리 기록한다.
 - [ ] 1차 Preview의 `outputDirectory=public` Function 진입점 탐색 오류를 수정하고 재배포한다.
+- [ ] 2차 Preview의 루트 `app.ts` Express 직접 가져오기 감지 오류를 수정하고 재배포한다.

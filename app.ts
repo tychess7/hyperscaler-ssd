@@ -1,7 +1,12 @@
-import { createApp } from "./server/app";
+import express from "express";
+import { configureApp } from "./server/app";
 
 /**
  * Vercel detects a root app.ts and serves this default-exported Express app as
- * a Function. Do not bind a port in this module.
+ * a Function. The direct express import and app construction are intentional:
+ * Vercel's Express framework detector checks the root entrypoint itself.
+ * Do not bind a port in this module.
  */
-export default createApp();
+const app = configureApp(express());
+
+export default app;
