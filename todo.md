@@ -42,3 +42,8 @@
 - [x] 확인한 Vercel 설정과 Express 풀스택 앱의 런타임 요구사항 차이를 진단한다.
 - [x] Vercel 수정안과 재배포 후 검증 절차를 실제 설정에 맞게 제공한다.
 - [x] Vercel Production 환경 변수의 실제 등록 여부와 적용 범위를 값 노출 없이 이름 기준으로 확인한다. (Project 환경 변수 0개)
+- [x] Vercel Preview 전용 Git 브랜치를 생성하고 Production 브랜치와 분리한다. (`feat/vercel-function-preview`)
+- [x] Express 앱 구성·서버 기동을 분리하고 루트 `app.ts` Vercel Function 진입점을 구현한다.
+- [x] Vercel 빌드에서 Vite 정적 자산을 `public/`으로 생성하고 `vercel.json` 배포 구성을 추가한다.
+- [x] Vercel 어댑터 구조의 단위 테스트, 타입 검사, 로컬 프로덕션 빌드를 검증한다. (16개 테스트·타입 검사·일반/VERCEL 빌드 통과)
+- [ ] Preview 배포에서 HTML·정적 자산·tRPC·OAuth 시작 경로의 응답을 검증하고 환경 변수 의존 실패를 분리 기록한다.

@@ -151,6 +151,7 @@ function vitePluginManusDebugCollector(): Plugin {
 }
 
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+const isVercelBuild = Boolean(process.env.VERCEL);
 
 export default defineConfig({
   plugins,
@@ -165,7 +166,10 @@ export default defineConfig({
   root: path.resolve(import.meta.dirname, "client"),
   publicDir: path.resolve(import.meta.dirname, "client", "public"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    // Vercel serves generated static assets from project-root public/ and runs
+    // the root app.ts as the Express Function. Manus keeps its dist/public
+    // layout for the long-lived production server.
+    outDir: path.resolve(import.meta.dirname, isVercelBuild ? "public" : "dist/public"),
     emptyOutDir: true,
   },
   server: {
