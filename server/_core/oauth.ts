@@ -1,5 +1,6 @@
-import { COOKIE_NAME, ONE_YEAR_MS, OAUTH_STATE_COOKIE, decodeOAuthState } from "@shared/const";
+import { COOKIE_NAME, ONE_YEAR_MS, OAUTH_STATE_COOKIE, decodeOAuthState, encodeOAuthState } from "@shared/const";
 import { parse as parseCookieHeader } from "cookie";
+import { randomUUID } from "crypto";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
@@ -11,6 +12,47 @@ function getQueryParam(req: Request, key: string): string | undefined {
 }
 
 export function registerOAuthRoutes(app: Express) {
+  app.get("/api/oauth/start", (req: Request, res: Response) => {
+    const redirectUri = getQueryParam(req, "redirectUri");
+    const portalUrl = process.env.VITE_OAUTH_PORTAL_URL;
+    const appId = process.env.VITE_APP_ID;
+
+    if (!redirectUri || !portalUrl || !appId) {
+      res.status(400).json({ error: "OAuth start is not configured" });
+      return;
+    }
+
+    try {
+      const target = new URL(redirectUri);
+      const requestHost = req.get("host");
+      if (target.pathname !== "/api/oauth/callback" || !requestHost || target.host !== requestHost) {
+        res.status(400).json({ error: "invalid OAuth redirect URI" });
+        return;
+      }
+
+      const nonce = randomUUID();
+      // Set by the same-origin server so browser cookie policies cannot drop a
+      // script-created nonce during the external OAuth round trip.
+      res.cookie(OAUTH_STATE_COOKIE, nonce, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 10 * 60 * 1000,
+      });
+
+      const state = encodeOAuthState({ redirectUri, nonce });
+      const authUrl = new URL("/app-auth", portalUrl);
+      authUrl.searchParams.set("appId", appId);
+      authUrl.searchParams.set("redirectUri", redirectUri);
+      authUrl.searchParams.set("state", state);
+      authUrl.searchParams.set("type", "signIn");
+      res.redirect(302, authUrl.toString());
+    } catch {
+      res.status(400).json({ error: "invalid OAuth redirect URI" });
+    }
+  });
+
   app.get("/api/oauth/callback", async (req: Request, res: Response) => {
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");

@@ -1,4 +1,3 @@
-import { OAUTH_STATE_COOKIE, encodeOAuthState } from "@shared/const";
 import { acquireOAuthLoginLock, clearOAuthLoginLock } from "@shared/oauthLoginGuard";
 
 export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
@@ -6,13 +5,9 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 // Start the Manus OAuth login. Call this from an event handler or effect at the
 // moment you want to navigate, e.g. `onClick={() => startLogin()}`.
 //
-// It has SIDE EFFECTS — it mints a one-time nonce, writes the __Host- state
-// cookie, and navigates immediately — so the cookie nonce always matches the
-// `state` it sends. Do NOT call it during render (no `href={startLogin()}` /
-// `loginUrl={...}`): each call overwrites the cookie, so a stray render-phase
-// call would desync it from an in-flight login and the callback would reject it
-// with "invalid oauth state". It returns void by design, so there is no URL to
-// stash across renders.
+// It has SIDE EFFECTS — it asks the same-origin server to set a one-time
+// HttpOnly nonce cookie before navigating to OAuth. Do NOT call it during
+// render (no `href={startLogin()}` / `loginUrl={startLogin()}`).
 export const startLogin = ({ force = false }: { force?: boolean } = {}) => {
   try {
     if (!acquireOAuthLoginLock(sessionStorage, Date.now(), force)) return;
@@ -20,21 +15,9 @@ export const startLogin = ({ force = false }: { force?: boolean } = {}) => {
     // If sessionStorage is unavailable, retain the secure nonce flow rather than blocking login.
   }
 
-  const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
-  const appId = import.meta.env.VITE_APP_ID;
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
-
-  const nonce = crypto.randomUUID();
-  // OAuth returns through a top-level GET navigation, so Lax protects this
-  // host-only CSRF cookie while allowing it to accompany the callback.
-  document.cookie = `${OAUTH_STATE_COOKIE}=${nonce}; Path=/; Max-Age=600; SameSite=Lax; Secure`;
-  const state = encodeOAuthState({ redirectUri, nonce });
-
-  const url = new URL(`${oauthPortalUrl}/app-auth`);
-  url.searchParams.set("appId", appId);
+  const url = new URL("/api/oauth/start", window.location.origin);
   url.searchParams.set("redirectUri", redirectUri);
-  url.searchParams.set("state", state);
-  url.searchParams.set("type", "signIn");
 
   window.location.href = url.toString();
 };
