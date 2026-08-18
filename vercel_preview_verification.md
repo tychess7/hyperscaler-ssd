@@ -29,3 +29,9 @@ Runtime Logs는 `/var/task/app.js`가 확장자 없는 `./server/app`을 가져�
 로그인된 Vercel 브라우저 세션으로도 최신 Preview의 루트가 `500 FUNCTION_INVOCATION_FAILED`를 반환하는 것을 재현했다. 해당 배포의 Runtime Logs가 초기 로딩 상태이므로, 로그 완성 후 남은 초기화 예외를 확인한다. Preview 보호는 명령행 요청을 Vercel SSO로 리디렉션하지만, 브라우저 세션에서는 실제 Function 500을 확인할 수 있다.
 
 최신 Runtime Logs는 `server/routers.js`가 TypeScript 경로 별칭 `@shared/const`를 Node 패키지로 해석하려다 실패한 것을 보여 줬다. Vercel Function의 Node ESM 런타임은 이 별칭을 알지 못하므로, Function 실행 경로의 `@shared/*` 가져오기를 명시적 `shared/*.js` 상대 경로로 전환한다.
+
+커밋 `6b02119`는 새 Preview URL `https://hyperscaler-6sbppmuz9-tychess.vercel.app`로 생성됐다. 이후 Vercel 대시보드 브라우저 세션이 `about:blank`로 전환돼 상태는 HTTP 요청과 재접속으로 확인한다.
+
+최신 Preview URL은 브라우저 확인 시 계속 `Deployment is building` 상태였다. 배포가 완료된 후 Function 런타임과 환경 변수 의존 경로를 재검증한다.
+
+커밋 `6b02119`의 Function은 더 이상 모듈 오류 없이 기동됐지만 루트에서 `Cannot GET /`를 반환했다. 이는 Express Function이 정상 실행되는 반면, Vite가 생성한 `public/index.html`을 Function이 제공하지 못한다는 뜻이다. 다음 수정에서는 `public/**`을 Function 포함 파일로 명시하고, API 라우트 등록 뒤에 `express.static(publicDir)` 및 SPA 폴백을 추가한다.

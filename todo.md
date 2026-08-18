@@ -53,3 +53,4 @@
 - [ ] Vercel Production 환경 변수와 OAuth 콜백 허용 구성을 완료한다.
 - [ ] Vercel Production 배포 후 웹 HTML·정적 자산·tRPC·OAuth 시작 경로를 검증한다.
 - [ ] 3차 Preview의 `FUNCTION_INVOCATION_FAILED` 런타임 원인을 로그에서 해결하고 웹 응답을 재검증한다.
+- [ ] Vercel Function에서 Vite 정적 자산과 SPA 루트 응답을 제공하도록 수정하고 Preview에서 검증한다.
