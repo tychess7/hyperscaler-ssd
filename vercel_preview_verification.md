@@ -21,3 +21,11 @@ Vercel은 `https://hyperscaler-ssd-git-feat-vercel-function-preview-tychess.verc
 ## 3차 Preview 상태
 
 커밋 `0e2f817`은 Vercel에서 `Ready`로 빌드됐고 Preview URL은 `https://hyperscaler-jhulxgkwg-tychess.vercel.app`이다. 그러나 루트 요청은 `500 FUNCTION_INVOCATION_FAILED`로 실패했다. 이는 Function 감지는 성공했지만 런타임 초기화 또는 요청 처리 중 예외가 발생했음을 뜻하므로, Production 반영 전에 Runtime Logs에서 원인을 해결해야 한다.
+
+Runtime Logs는 `/var/task/app.js`가 확장자 없는 `./server/app`을 가져오려다 `ERR_MODULE_NOT_FOUND`가 발생했음을 보여 줬다. Vercel Node Function이 TypeScript 내부 모듈을 `.js`로 내보내지만 원본 확장자 없는 ESM 가져오기를 자동 변환하지 않기 때문이다. 커밋 `7eec75a`에서 Function이 따라가는 서버 내부 상대 경로에 명시적 `.js` 확장자를 적용했고, 새 Preview URL `https://hyperscaler-mkfqdmre7-tychess.vercel.app`의 빌드 완료와 HTTP 응답을 재확인한다.
+
+커밋 `7eec75a`의 Preview는 Vercel에서 `Ready`로 빌드 완료됐다. 다음 단계는 해당 URL의 루트 HTML, 정적 자산, tRPC 및 OAuth 시작 엔드포인트를 실제 요청으로 검증하는 것이다.
+
+로그인된 Vercel 브라우저 세션으로도 최신 Preview의 루트가 `500 FUNCTION_INVOCATION_FAILED`를 반환하는 것을 재현했다. 해당 배포의 Runtime Logs가 초기 로딩 상태이므로, 로그 완성 후 남은 초기화 예외를 확인한다. Preview 보호는 명령행 요청을 Vercel SSO로 리디렉션하지만, 브라우저 세션에서는 실제 Function 500을 확인할 수 있다.
+
+최신 Runtime Logs는 `server/routers.js`가 TypeScript 경로 별칭 `@shared/const`를 Node 패키지로 해석하려다 실패한 것을 보여 줬다. Vercel Function의 Node ESM 런타임은 이 별칭을 알지 못하므로, Function 실행 경로의 `@shared/*` 가져오기를 명시적 `shared/*.js` 상대 경로로 전환한다.

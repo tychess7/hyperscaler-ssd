@@ -1,4 +1,4 @@
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME } from "../shared/const.js";
 import { z } from "zod";
 import { createServerCandidates, createSsdCandidates, deleteServerCandidate, deleteSsdCandidate, listServerCandidates, listSsdCandidates } from "./db.js";
 import { getSessionCookieOptions } from "./_core/cookies.js";

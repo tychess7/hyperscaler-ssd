@@ -1,4 +1,4 @@
-import { COOKIE_NAME, ONE_YEAR_MS, OAUTH_STATE_COOKIE, decodeOAuthState, encodeOAuthState } from "@shared/const";
+import { COOKIE_NAME, ONE_YEAR_MS, OAUTH_STATE_COOKIE, decodeOAuthState, encodeOAuthState } from "../../shared/const.js";
 import { parse as parseCookieHeader } from "cookie";
 import { randomUUID } from "crypto";
 import type { Express, Request, Response } from "express";
