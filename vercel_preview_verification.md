@@ -43,3 +43,11 @@ Vercel 배포 목록을 재확인한 결과, `0a42617`은 계속 빌드 중이�
 커밋 `0a42617`의 Preview는 Vercel에서 `Ready`로 빌드 완료됐다. 이제 `https://hyperscaler-h92wrax9k-tychess.vercel.app`에서 루트 페이지 및 API 경로를 실제로 검증한다.
 
 실제 검증에서 루트는 `Signal Ledger · Hyperscaler SSD Intelligence` 대시보드 HTML을 정상 렌더링했고, 정적 CSS·JavaScript가 로드돼 전체 UI가 표시됐다. `/api/trpc/auth.me`는 HTML이 아닌 `{"result":{"data":{"json":null}}}` JSON을 반환했다. 즉, Function·SPA·tRPC 공개 경로는 Preview에서 정상 동작한다. OAuth 시작과 사용자 저장 기능은 Vercel 환경 변수와 OAuth 콜백 허용 구성이 없으므로 Production 환경 설정 후에 검증한다.
+
+GitHub `main`은 커밋 `a78a4bf`까지 fast-forward로 반영됐고, Vercel은 `https://hyperscaler-q5tabmw3h-tychess.vercel.app`에서 새 **Production** 배포를 생성했다. 확인 시 상태는 `Building`이었으며, 기존 `https://hyperscaler-ssd.vercel.app`은 이전 배포의 서버 번들을 아직 제공하고 있었다. 새 Production 빌드가 준비된 뒤 고정 도메인의 응답을 재검증한다.
+
+커밋 `a78a4bf`의 Vercel Production 배포는 `Ready` 상태로 완료됐다. 이제 고정 Production 도메인의 웹 및 API 응답을 확인한다.
+
+고정 Production 도메인 `https://hyperscaler-ssd.vercel.app`은 이제 JavaScript 서버 번들이 아니라 Signal Ledger 대시보드 HTML을 정상 렌더링한다. 정적 자산과 인터랙티브 필터 UI도 로드됐고, `/api/trpc/auth.me`는 비로그인 상태에 맞는 `{"result":{"data":{"json":null}}}` JSON을 반환했다.
+
+`/api/oauth/start`는 `{"error":"OAuth start is not configured"}`를 반환했다. 이는 Vercel Production Project 환경 변수가 0개인 상태와 일치한다. 따라서 공개 대시보드·tRPC 공개 경로의 배포는 정상이나, 로그인·후보 저장 기능은 `VITE_APP_ID`, `OAUTH_SERVER_URL`, `VITE_OAUTH_PORTAL_URL`, `JWT_SECRET`, `DATABASE_URL` 및 Forge 관련 Vercel 환경 변수와 Production 콜백 URL 등록 전까지 비활성 상태다.

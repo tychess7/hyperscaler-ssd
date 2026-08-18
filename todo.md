@@ -49,8 +49,8 @@
 - [x] Preview 배포에서 HTML·정적 자산·tRPC 공개 경로의 응답을 검증하고 OAuth·저장 기능의 환경 변수 의존성을 분리 기록한다. (루트·정적 UI·`auth.me` JSON 응답 성공)
 - [x] 1차 Preview의 `outputDirectory=public` Function 진입점 탐색 오류를 수정하고 재배포한다.
 - [x] 2차 Preview의 루트 `app.ts` Express 직접 가져오기 감지 오류를 수정하고 재배포한다.
-- [ ] 최신 Vercel Function 어댑터를 완료하고 GitHub `main`에 반영한다.
+- [x] 최신 Vercel Function 어댑터를 완료하고 GitHub `main`에 반영한다. (커밋 `a78a4bf`)
 - [ ] Vercel Production 환경 변수와 OAuth 콜백 허용 구성을 완료한다.
-- [ ] Vercel Production 배포 후 웹 HTML·정적 자산·tRPC·OAuth 시작 경로를 검증한다.
+- [x] Vercel Production 배포 후 웹 HTML·정적 자산·tRPC·OAuth 시작 경로를 검증한다. (웹·정적 자산·tRPC 성공; OAuth는 Project 환경 변수 0개로 인한 명시적 미구성 응답 확인)
 - [x] 3차 Preview의 `FUNCTION_INVOCATION_FAILED` 런타임 원인을 로그에서 해결하고 웹 응답을 재검증한다. (Node ESM 내부 경로·`@shared` 별칭 해결)
 - [x] Vercel Function에서 Vite 정적 자산과 SPA 루트 응답을 제공하도록 수정하고 Preview에서 검증한다.
