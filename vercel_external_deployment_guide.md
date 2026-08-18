@@ -38,7 +38,7 @@ Vercel의 Output Directory를 `dist/public`으로 바꾸면, 최소한 루트에
 | 프로젝트 루트 `app.ts` 신규 | `export default createApp()` | Vercel이 감지하는 Express Function 진입점 |
 | `server/_core/index.ts` 수정 | 기존 개발/Manus 기동용 `createServer()`와 `listen()`은 유지하되, `createApp()`을 가져와 사용 | Manus 개발·배포 동작 보존 |
 | `vite.config.ts` 수정 | Vercel 빌드 시 산출물을 루트 `public/`으로, 그 외에는 기존 `dist/public/`으로 출력 | Vercel CDN 정적 자산 규칙 충족 |
-| `vercel.json` 신규 | Framework·install·build·output 경로를 소스에서 고정 | 대시보드 기본값과 코드 산출물 불일치 제거 |
+| `vercel.json` 신규 | Framework·install·build 명령을 소스에서 고정 | 대시보드 기본값과 코드 산출물 불일치 제거 |
 
 ### 1. Express 앱을 기동 코드와 분리
 
@@ -101,15 +101,14 @@ export default defineConfig({
 
 ### 3. `vercel.json`으로 빌드 계약 고정
 
-프로젝트 루트에 다음 파일을 추가합니다. 이 구성은 대시보드에 남아 있는 Vite 기본 `dist` 해석을 코드 차원에서 덮어씁니다. `vercel.json`의 `framework`, `buildCommand`, `installCommand`, `outputDirectory`는 프로젝트 설정을 재정의할 수 있습니다.[3]
+프로젝트 루트에 다음 파일을 추가합니다. 이 구성은 대시보드에 남아 있는 Vite 기본 `dist` 해석을 코드 차원에서 덮어씁니다. `vercel.json`의 `framework`, `buildCommand`, `installCommand`는 프로젝트 설정을 재정의할 수 있습니다.[3] `outputDirectory`는 지정하지 않습니다. 이를 `public`으로 지정하면 Vercel이 루트 `app.ts` Function 진입점이 아니라 생성된 출력 폴더에서만 엔트리포인트를 찾을 수 있습니다.
 
 ```json
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "express",
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm build",
-  "outputDirectory": "public"
+  "buildCommand": "pnpm build"
 }
 ```
 
@@ -117,7 +116,7 @@ export default defineConfig({
 
 ### 4. Vercel 대시보드와 환경 변수 반영
 
-소스를 푸시한 뒤 Vercel은 `app.ts`를 Express Function으로 감지하고, `public/`을 CDN 정적 자산으로 사용해야 합니다. 대시보드의 Framework Preset도 `Express`로 보이는지 확인합니다. 소스의 `vercel.json`이 우선이지만, 대시보드에서 남아 있는 값이 있다면 Build Command는 `pnpm build`, Output Directory는 `public`, Install Command는 `pnpm install --frozen-lockfile`인지 일치시킵니다.
+소스를 푸시한 뒤 Vercel은 `app.ts`를 Express Function으로 감지하고, `public/`을 CDN 정적 자산으로 사용해야 합니다. 대시보드의 Framework Preset도 `Express`로 보이는지 확인합니다. 소스의 `vercel.json`이 우선이지만, 대시보드에서 남아 있는 값이 있다면 Build Command는 `pnpm build`, Install Command는 `pnpm install --frozen-lockfile`인지 일치시킵니다. Output Directory는 비워 두어 프로젝트 루트의 Function 진입점도 함께 감지되도록 합니다.
 
 현재 Vercel Project 환경 변수는 **0개**입니다. Vercel에는 비밀값을 채팅이나 Git에 넣지 말고 **Production** 범위로 다음 변수를 등록해야 합니다. `VITE_` 접두어가 붙은 값은 Vite 빌드에 포함되므로 빌드 전에 등록해야 하며, 서버 전용 값은 Function 런타임에서 필요합니다.[2]
 
