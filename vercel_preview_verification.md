@@ -51,3 +51,7 @@ GitHub `main`은 커밋 `a78a4bf`까지 fast-forward로 반영됐고, Vercel은 
 고정 Production 도메인 `https://hyperscaler-ssd.vercel.app`은 이제 JavaScript 서버 번들이 아니라 Signal Ledger 대시보드 HTML을 정상 렌더링한다. 정적 자산과 인터랙티브 필터 UI도 로드됐고, `/api/trpc/auth.me`는 비로그인 상태에 맞는 `{"result":{"data":{"json":null}}}` JSON을 반환했다.
 
 `/api/oauth/start`는 `{"error":"OAuth start is not configured"}`를 반환했다. 이는 Vercel Production Project 환경 변수가 0개인 상태와 일치한다. 따라서 공개 대시보드·tRPC 공개 경로의 배포는 정상이나, 로그인·후보 저장 기능은 `VITE_APP_ID`, `OAUTH_SERVER_URL`, `VITE_OAUTH_PORTAL_URL`, `JWT_SECRET`, `DATABASE_URL` 및 Forge 관련 Vercel 환경 변수와 Production 콜백 URL 등록 전까지 비활성 상태다.
+
+검증 기록 커밋 `a11a9d2`로 인해 Vercel은 최종 Production 배포 `https://hyperscaler-kr4rl9e4s-tychess.vercel.app`를 추가로 생성했다. 해당 배포는 확인 시 `Building` 상태였으며, 코드 변경이 없는 기록 커밋이므로 준비 완료 상태만 확인한다.
+
+최종 Production 배포는 재확인 시에도 빌드 진행 중이었다. 이전 Production 커밋 `a78a4bf`는 이미 Ready이며, 고정 도메인에서 대시보드와 tRPC 응답을 검증했다.
