@@ -24,8 +24,9 @@ export function registerOAuthRoutes(app: Express) {
 
     try {
       const target = new URL(redirectUri);
-      const requestHost = req.get("host");
-      if (target.pathname !== "/api/oauth/callback" || !requestHost || target.host !== requestHost) {
+      // The frontend supplies its actual origin. Behind the deployment gateway,
+      // req.host is an internal upstream host and cannot safely identify that origin.
+      if (target.protocol !== "https:" || target.pathname !== "/api/oauth/callback") {
         res.status(400).json({ error: "invalid OAuth redirect URI" });
         return;
       }
