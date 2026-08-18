@@ -1,4 +1,5 @@
 import { OAUTH_STATE_COOKIE, encodeOAuthState } from "@shared/const";
+import { acquireOAuthLoginLock, clearOAuthLoginLock } from "@shared/oauthLoginGuard";
 
 export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
@@ -12,13 +13,21 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 // call would desync it from an in-flight login and the callback would reject it
 // with "invalid oauth state". It returns void by design, so there is no URL to
 // stash across renders.
-export const startLogin = () => {
+export const startLogin = ({ force = false }: { force?: boolean } = {}) => {
+  try {
+    if (!acquireOAuthLoginLock(sessionStorage, Date.now(), force)) return;
+  } catch {
+    // If sessionStorage is unavailable, retain the secure nonce flow rather than blocking login.
+  }
+
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
 
   const nonce = crypto.randomUUID();
-  document.cookie = `${OAUTH_STATE_COOKIE}=${nonce}; Path=/; Max-Age=600; SameSite=None; Secure`;
+  // OAuth returns through a top-level GET navigation, so Lax protects this
+  // host-only CSRF cookie while allowing it to accompany the callback.
+  document.cookie = `${OAUTH_STATE_COOKIE}=${nonce}; Path=/; Max-Age=600; SameSite=Lax; Secure`;
   const state = encodeOAuthState({ redirectUri, nonce });
 
   const url = new URL(`${oauthPortalUrl}/app-auth`);
@@ -28,4 +37,12 @@ export const startLogin = () => {
   url.searchParams.set("type", "signIn");
 
   window.location.href = url.toString();
+};
+
+export const clearPendingLoginStart = () => {
+  try {
+    clearOAuthLoginLock(sessionStorage);
+  } catch {
+    // sessionStorage unavailable
+  }
 };

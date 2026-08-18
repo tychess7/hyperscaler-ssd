@@ -5,8 +5,10 @@ import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
-import { startLogin } from "./const";
+import { clearPendingLoginStart, startLogin } from "./const";
 import "./index.css";
+
+clearPendingLoginStart();
 
 const queryClient = new QueryClient();
 
